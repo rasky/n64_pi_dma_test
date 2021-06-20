@@ -13,6 +13,12 @@ uint8_t *log_buffer  = (uint8_t*)0x80320000;
 
 volatile uint32_t * const PI_regs = (volatile uint32_t*)0xa4600000;
 
+#define PI_STATUS_REG          PI_regs[4]
+#define PI_BSD_DOM1_LAT_REG    PI_regs[5]
+#define PI_BSD_DOM1_PWD_REG    PI_regs[6]
+#define PI_BSD_DOM1_PGS_REG    PI_regs[7]
+#define PI_BSD_DOM1_RLS_REG    PI_regs[8]
+
 /* A copy of DMA read from libdragon, that also times the transfer. */
 uint32_t my_dma_read(void * ram_address, unsigned long pi_address, unsigned long len) 
 {
@@ -114,6 +120,13 @@ int main(void) {
 	printf("PI_DMA_TEST -- Running test\n\n");
 	#endif
 
+	// Configure PI timing registers. These are the defaults that should have
+	// been already set by the boot sequence, but we configure them explicitly
+	// anyway just in case some funky menu of some SDK decided to tweak them.
+	PI_BSD_DOM1_LAT_REG = 0x40;
+	PI_BSD_DOM1_PWD_REG = 0x12;
+	PI_BSD_DOM1_PGS_REG = 0x07;
+	PI_BSD_DOM1_RLS_REG = 0x03;
 	int nfails = 0;
 	int nfailstimings = 0;
 	bool check_timings = true;

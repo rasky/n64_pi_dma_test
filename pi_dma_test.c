@@ -5,6 +5,8 @@
 /* 1 = generate logfiles on SD; 0 = run the test */
 #define MODE_GENERATE     0
 
+#define ENABLE_TIMING_TESTS   1
+
 #define BUFFER_SIZE       512
 
 uint8_t *ram_buffer  = (uint8_t*)0x80300000;
@@ -127,9 +129,10 @@ int main(void) {
 	PI_BSD_DOM1_PWD_REG = 0x12;
 	PI_BSD_DOM1_PGS_REG = 0x07;
 	PI_BSD_DOM1_RLS_REG = 0x03;
+
 	int nfails = 0;
 	int nfailstimings = 0;
-	bool check_timings = true;
+	bool check_timings = ENABLE_TIMING_TESTS;
 
 	for (int ram_offs = 0; ram_offs < 16; ram_offs++) {
 		for (int rom_offs = 0; rom_offs < 2; rom_offs++) {
@@ -153,7 +156,7 @@ int main(void) {
 				data_cache_hit_writeback_invalidate(ram_buffer, BUFFER_SIZE);
 
 				// Do 8 runs to find min/max range
-				int nruns = MODE_GENERATE ? 8 : 4;
+				int nruns = MODE_GENERATE ? 8 : (check_timings ? 4 : 1);
 				uint16_t minticks = 65535, maxticks = 0;
 				uint16_t avgticks = 0;
 				for (int r=0;r<nruns;r++) {
@@ -207,7 +210,7 @@ int main(void) {
 							printf("\n");
 							nfails++;
 							if (++nfailstimings == 8) {
-								printf("FATAL: Too many timing errors, disabling checks");
+								printf("FATAL: Too many timing errors, disabling checks\n");
 								check_timings = false;
 							}
 						}

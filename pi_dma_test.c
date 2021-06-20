@@ -36,6 +36,10 @@ uint32_t my_dma_read(void * ram_address, unsigned long pi_address, unsigned long
     volatile uint32_t t1 = TICKS_READ();
     MEMORY_BARRIER();
 
+    // Clear PI interrupt. This is strictly not necessary but might simplify
+    // testing in some emulators.
+    PI_STATUS_REG = 0x2;
+
     enable_interrupts();
 
     return TICKS_DISTANCE(t0, t1);
@@ -50,6 +54,11 @@ void my_dma_read_len_only(unsigned long len) {
     PI_regs[3] = len-1;
     MEMORY_BARRIER();
     while (dma_busy()) ;
+
+    // Clear PI interrupt. This is strictly not necessary but might simplify
+    // testing in some emulators.
+    PI_STATUS_REG = 0x2;
+
     enable_interrupts();
 }
 

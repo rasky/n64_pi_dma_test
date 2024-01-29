@@ -28,7 +28,7 @@ uint32_t my_dma_read(void * ram_address, unsigned long pi_address, unsigned long
 
     disable_interrupts();
 
-    while (dma_busy()) ;
+    dma_wait();
     MEMORY_BARRIER();
     PI_regs[0] = (uint32_t)ram_address;
     MEMORY_BARRIER();
@@ -39,7 +39,7 @@ uint32_t my_dma_read(void * ram_address, unsigned long pi_address, unsigned long
 
     volatile uint32_t t0 = TICKS_READ();
     MEMORY_BARRIER();
-    while (dma_busy()) ;
+    dma_wait();
     MEMORY_BARRIER();
     volatile uint32_t t1 = TICKS_READ();
     MEMORY_BARRIER();
@@ -57,11 +57,11 @@ void my_dma_read_len_only(unsigned long len) {
     assert(len > 0);
 
     disable_interrupts();
-    while (dma_busy()) ;
+    dma_wait();
     MEMORY_BARRIER();
     PI_regs[3] = len-1;
     MEMORY_BARRIER();
-    while (dma_busy()) ;
+    dma_wait();
 
     // Clear PI interrupt. This is strictly not necessary but might simplify
     // testing in some emulators.
@@ -95,7 +95,6 @@ bool compare_buffer(uint8_t *ram_buffer, FILE *log, int sz, const char *errmsg) 
 }
 
 int main(void) {
-	init_interrupts();
 	console_init();
 	console_set_debug(true);
 	debug_init_usblog();

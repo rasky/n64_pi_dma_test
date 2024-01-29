@@ -13,7 +13,7 @@
 
 #define BUFFER_SIZE       512
 
-uint8_t *ram_buffer  = (uint8_t*)0x80300000;
+uint8_t *ram_buffer  = (uint8_t*)0x80300780;
 uint8_t *ram_buffer2 = (uint8_t*)0x80310000;
 uint8_t *log_buffer  = (uint8_t*)0x80320000;
 
@@ -137,24 +137,24 @@ int main(void) {
 	int nfailstimings = 0;
 	bool check_timings = ENABLE_TIMING_TESTS;
 
-	for (int ram_offs = 0; ram_offs < 16; ram_offs++) {
+	for (int ram_offs = 0x0; ram_offs < 0x80; ram_offs++) {
 		for (int rom_offs = 0; rom_offs < 2; rom_offs++) {
 
 			FILE *log; char logfn[256];
 
 			#if MODE_GENERATE
-			sprintf(logfn, "sd:/pidma_ram%d_rom%d.log", ram_offs, rom_offs);
+			sprintf(logfn, "sd:/pidma_ram%x_rom%d.log", ram_offs+0x780, rom_offs);
 			log = fopen(logfn, "wb");
 			assertf(log, "Cannot create logfile: %s", logfn);
 			#else
-			sprintf(logfn, "rom:/pidma_ram%d_rom%d.log", ram_offs, rom_offs);
+			sprintf(logfn, "rom:/pidma_ram%x_rom%d.log", ram_offs+0x780, rom_offs);
 			log = asset_fopen(logfn, NULL);
 			assertf(log, "Cannot open logfile: %s", logfn);
 			#endif
 
-			printf("Offsets: RAM=%d, ROM=%d...\n", ram_offs, rom_offs);
+			printf("Offsets: RAM=0x%x, ROM=0x%x...\n", ram_offs+0x780, rom_offs);
 
-			for (int sz = 1; sz < 384; sz++) {
+			for (int sz = 1; sz < 224; sz++) {
 				memset(ram_buffer, 0xAA, BUFFER_SIZE);
 				data_cache_hit_writeback_invalidate(ram_buffer, BUFFER_SIZE);
 

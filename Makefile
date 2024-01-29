@@ -10,7 +10,7 @@ all: pi_dma_test.z64
 
 pi_dma_test.z64: $(BUILD_DIR)/pi_dma_test.dfs
 pi_dma_test.z64: N64_ROM_TITLE="PI DMA Test"
-$(BUILD_DIR)/pi_dma_test.dfs: dfs/
+$(BUILD_DIR)/pi_dma_test.dfs: data/
 $(BUILD_DIR)/pi_dma_test.elf: $(obj)
 
 clean:
@@ -19,10 +19,7 @@ clean:
 	rm -f $(asm:%.S=$(BUILD_DIR)/%.o)
 	rm -f $(rsp:%.S=$(BUILD_DIR)/%.rsp)
 	rm -f $(src:%.c=$(BUILD_DIR)/%.d) $(asm:%.S=$(BUILD_DIR)/%.d)
-	rm -f mvs64-*.elf
-	rm -f mvs64-*.dfs
-	rm -f mvs64-*.z64
 
--include $(src:%.c=$(BUILD_DIR)/%.d) $(asm:%.S=$(BUILD_DIR)/%.d) $(src_makerom:%.c=$(BUILD_DIR)/%.d)
+-include $(src:%.c=$(BUILD_DIR)/%.d) $(asm:%.S=$(BUILD_DIR)/%.d)
 
 .PHONY: clean test

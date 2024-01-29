@@ -109,7 +109,7 @@ int main(void) {
 
 	#if MODE_GENERATE
 	printf("PI_DMA_TEST -- Generation mode\n\n");
-	printf("This program requires a 64drive with a SD card.\n");
+	printf("This program requires a flashcart with a SD card.\n");
 	printf("Make sure a SD is inserted or the program will crash.\n\n");
 	printf("Generation will start in 1 second...\n");
 	wait_ms(1000);
@@ -166,8 +166,8 @@ int main(void) {
 				}
 				avgticks /= nruns;
 
-				uint32_t post_dst = PI_regs[0];
-				uint32_t post_src = PI_regs[1];
+				uint32_t post_dst = PI_regs[0] - PhysicalAddr(ram_buffer);
+				uint32_t post_src = PI_regs[1] - PhysicalAddr((void*)rom_buffer);
 				uint32_t post_len = PI_regs[3];
 
 				// Save the buffer

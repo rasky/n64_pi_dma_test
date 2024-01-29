@@ -2,15 +2,22 @@ BUILD_DIR=build
 include $(N64_INST)/include/n64.mk
 
 src = pi_dma_test.c
-rsp = 
-asm = 
-obj = $(src:%.c=$(BUILD_DIR)/%.o) $(asm:%.S=$(BUILD_DIR)/%.o) $(rsp:%.S=$(BUILD_DIR)/%.text.o) $(rsp:%.S=$(BUILD_DIR)/%.data.o)
+obj = $(src:%.c=$(BUILD_DIR)/%.o) $(asm:%.S=$(BUILD_DIR)/%.o)
+
+assets = $(wildcard data/*.log)
+assets_conv = $(addprefix filesystem/,$(notdir $(assets:%.log=%.log)))
 
 all: pi_dma_test.z64
 
+filesystem/%.log: data/%.log
+	@mkdir -p $(dir $@)
+	@echo "    [DATA] $@"
+	@cp $< $@
+	$(N64_BINDIR)/mkasset -o filesystem $<
+
 pi_dma_test.z64: $(BUILD_DIR)/pi_dma_test.dfs
 pi_dma_test.z64: N64_ROM_TITLE="PI DMA Test"
-$(BUILD_DIR)/pi_dma_test.dfs: data/
+$(BUILD_DIR)/pi_dma_test.dfs: $(assets_conv)
 $(BUILD_DIR)/pi_dma_test.elf: $(obj)
 
 clean:

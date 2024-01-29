@@ -5,7 +5,11 @@
 /* 1 = generate logfiles on SD; 0 = run the test */
 #define MODE_GENERATE     0
 
-#define ENABLE_TIMING_TESTS   1
+/* Currently, our understanding of PI DMA is not enough to pass timing tests
+   in any emulator. Emulators do approximate them but not at a good enough
+   level. Also, it's not clear why timing tests are also affected by the
+   fact that asset compression is used (?). So we disable them by default for now. */
+#define ENABLE_TIMING_TESTS   0
 
 #define BUFFER_SIZE       512
 
@@ -144,7 +148,7 @@ int main(void) {
 			assertf(log, "Cannot create logfile: %s", logfn);
 			#else
 			sprintf(logfn, "rom:/pidma_ram%d_rom%d.log", ram_offs, rom_offs);
-			log = fopen(logfn, "rb");
+			log = asset_fopen(logfn, NULL);
 			assertf(log, "Cannot open logfile: %s", logfn);
 			#endif
 

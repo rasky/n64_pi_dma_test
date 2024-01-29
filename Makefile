@@ -1,6 +1,5 @@
-BUILD_DIR = build
-
-include n64rasky.mk
+BUILD_DIR=build
+include $(N64_INST)/include/n64.mk
 
 src = pi_dma_test.c
 rsp = 
@@ -9,14 +8,10 @@ obj = $(src:%.c=$(BUILD_DIR)/%.o) $(asm:%.S=$(BUILD_DIR)/%.o) $(rsp:%.S=$(BUILD_
 
 all: pi_dma_test.z64
 
-pi_dma_test.dfs: dfs/
-pi_dma_test.z64: pi_dma_test.dfs
-pi_dma_test.z64: N64_ROM_TITLE="MVS64: ${ROMNAME}"
-pi_dma_test.elf: $(obj)
-
-mvsmakerom: $(obj_makerom)
-	@echo "    [LD] $@"
-	$(CC) $(LDFLAGS) -o $@ $^
+pi_dma_test.z64: $(BUILD_DIR)/pi_dma_test.dfs
+pi_dma_test.z64: N64_ROM_TITLE="PI DMA Test"
+$(BUILD_DIR)/pi_dma_test.dfs: dfs/
+$(BUILD_DIR)/pi_dma_test.elf: $(obj)
 
 clean:
 	rm -f $(obj)

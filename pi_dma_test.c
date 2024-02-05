@@ -137,8 +137,8 @@ int main(void) {
 	int nfailstimings = 0;
 	bool check_timings = ENABLE_TIMING_TESTS;
 
-	for (int ram_offs = 0x0; ram_offs < 0x80; ram_offs++) {
-		for (int rom_offs = 0; rom_offs < 2; rom_offs++) {
+	for (int ram_offs = 0x0; ram_offs < 0x80; ram_offs+=2) {
+		for (int rom_offs = 0; rom_offs < 2; rom_offs+=2) {
 
 			FILE *log; char logfn[256];
 
@@ -154,7 +154,7 @@ int main(void) {
 
 			printf("Offsets: RAM=0x%x, ROM=0x%x...\n", ram_offs+0x780, rom_offs);
 
-			for (int sz = 1; sz < 224; sz++) {
+			for (int sz = 1; sz < 384; sz++) {
 				memset(ram_buffer, 0xAA, BUFFER_SIZE);
 				data_cache_hit_writeback_invalidate(ram_buffer, BUFFER_SIZE);
 

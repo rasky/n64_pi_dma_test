@@ -7,8 +7,7 @@ The test verifies the output against golden files that were acquired on real
 hardware, so they are verified to be correct.
 
 You can refer to this document for information on the findings:
-https://n64brew.dev/wiki/Peripheral_Interface#Unaligned_DMA_transfer
-
+https://n64brew.dev/wiki/Peripheral_Interface#DMA_Transfers
 
 ### How to compile
 

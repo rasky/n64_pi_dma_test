@@ -5,11 +5,13 @@
 /* 1 = generate logfiles on SD; 0 = run the test */
 #define MODE_GENERATE     0
 
-/* Currently, our understanding of PI DMA is not enough to pass timing tests
-   in any emulator. Emulators do approximate them but not at a good enough
-   level. Also, it's not clear why timing tests are also affected by the
-   fact that asset compression is used (?). So we disable them by default for now. */
-#define ENABLE_TIMING_TESTS   0
+/* Enable timing tests. This will test if the emulator is accurately
+   emulating the PI DMA behavior with respect to timing. */
+#define ENABLE_TIMING_TESTS   1
+
+/* Allow for some slack in timing tests, to account for
+   differences in emulators and hardware. This is set at 10% for now. */
+#define TIMING_TEST_TOLERANCE 	0.1f
 
 #define BUFFER_SIZE       512
 
@@ -206,7 +208,7 @@ int main(void) {
 					fread(&exp_post_len, 1, 4, log);
 
 					if (check_timings) {					
-						if (avgticks < exp_minticks*0.9 || avgticks > exp_maxticks*1.1) {
+						if (avgticks < exp_minticks*(1.0f-TIMING_TEST_TOLERANCE) || avgticks > exp_maxticks*(1.0f+TIMING_TEST_TOLERANCE)) {
 							printf("ERROR on timing of DMA of size %d.\n", sz);
 							printf("Found:  %d\n", avgticks);
 							printf("Expect: [%d .. %d]\n", exp_minticks, exp_maxticks);
